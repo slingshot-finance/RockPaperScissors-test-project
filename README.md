@@ -1,7 +1,8 @@
 # RockPaperScissors test project
 
-You will create a smart contract named RockPaperScissors whereby:
-Alice and Bob play the classic rock paper scissors game.  
+You will create a smart contract named RockPaperScissors whereby:  
+Alice and Bob play the classic game of rock, paper, scissors using their ETH.    
+  
 To enroll, each player needs to deposit the right Ether amount, possibly zero.  
 To play, each player submits their unique move.  
 The contract decides and rewards the winner with all Ether wagered.  
