@@ -14,6 +14,7 @@ contract RockPaperScissors is ERC20 {
 
     IERC20 public token;
     address public governance;
+    uint256 public bid = 20_000_000_000_000_000_000;
 
     constructor(address _token) 
         ERC20("RockPaperScissorsToken", "RPS")
@@ -22,18 +23,19 @@ contract RockPaperScissors is ERC20 {
         governance = msg.sender;
     }
 
-    function balance() public view returns (uint256) {
-        return token.balanceOf(address(this));
-    }
-
     function setGovernance(address _governance) public {
         require(msg.sender == governance, "!governance");
         governance = _governance;
     }
 
+    function setBid(uint256 _bid) public {
+        require(msg.sender == governance, "!governance");
+        bid = _bid;
+    }
+
     function deposit(uint256 _amount) public {
         // Amount must be greater than zero
-        require(_amount > 0, "amount cannot be 0");
+        require(_amount == bid, "amount must be equal to bid");
 
         // Transfer MyToken to smart contract
         token.safeTransferFrom(msg.sender, address(this), _amount);
@@ -48,5 +50,9 @@ contract RockPaperScissors is ERC20 {
 
         // Transfer MyTokens from this smart contract to msg sender
         token.safeTransfer(msg.sender, _amount);
+    }
+
+    function withdrawAll() external {
+        withdraw(balanceOf(msg.sender));
     }
 }
