@@ -13,11 +13,13 @@ contract RockPaperScissors is ERC20 {
     using SafeERC20 for IERC20;
 
     IERC20 public token;
+    address public governance;
 
     constructor(address _token) 
         ERC20("RockPaperScissorsToken", "RPS")
     {
         token = IERC20(_token);
+        governance = msg.sender;
     }
 
     function balance() public view returns (uint256) {
