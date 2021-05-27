@@ -26,6 +26,11 @@ contract RockPaperScissors is ERC20 {
         return token.balanceOf(address(this));
     }
 
+    function setGovernance(address _governance) public {
+        require(msg.sender == governance, "!governance");
+        governance = _governance;
+    }
+
     function deposit(uint256 _amount) public {
         // Amount must be greater than zero
         require(_amount > 0, "amount cannot be 0");
