@@ -28,7 +28,7 @@ contract RockPaperScissors is ERC20 {
         governance = _governance;
     }
 
-    function setBid(uint256 _bid) public {
+    function setBid(uint256 _bid) external {
         require(msg.sender == governance, "!governance");
         bid = _bid;
     }
