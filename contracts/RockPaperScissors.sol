@@ -119,26 +119,31 @@ contract RockPaperScissors is ERC20 {
 
     function winner(address _winner) internal {
         if (gameMatch.firstPlayer == _winner) {
-            // Transfer all the bid to the first address and burn RPS tokens from the winner
+            // Transfer all the bid to the winner and burn his/her RPS tokens
             withdraw(token.balanceOf(address(this)), _winner);
             // Burn RPS tokens from the looser
             _burn(gameMatch.secondPlayer, bid);
         }
         else {
-            // Transfer all the bid to the first address and burn RPS tokens from the winner
+            // Transfer all the bid to the winner and burn his/her RPS tokens
             withdraw(token.balanceOf(address(this)), _winner);
             // Burn RPS tokens from the looser
             _burn(gameMatch.firstPlayer, bid);
         }
+        cleanMatch();
     }
 
     function tie() internal {
         withdraw(bid, gameMatch.firstPlayer);
         withdraw(bid, gameMatch.secondPlayer);
+        cleanMatch();
     }
 
     function cleanMatch() internal {
-
+        gameMatch.firstPlayer = address(0);
+        gameMatch.secondPlayer = address(0);
+        gameMatch.firstPlayerMove = PossibleMoves.Default;
+        gameMatch.secondPlayerMove = PossibleMoves.Default;
     }
 
     function withdraw(uint256 _amount, address _address) internal {
