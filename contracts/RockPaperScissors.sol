@@ -58,18 +58,16 @@ contract RockPaperScissors is ERC20 {
     }
 
     // If the first Player decides not to wait for the second player to play the game, he/she can withdraw the funds
-    function leaveGame(uint256 _amount) public {
+    function leaveGame() public {
         require(msg.sender == gameMatch.firstPlayer && gameMatch.secondPlayer == address(0), "You can't withdraw");
 
+        uint256 balance = balanceOf(msg.sender);
+
         // Burn RockPaperScissorsToken from msg sender
-        _burn(msg.sender, _amount);
+        _burn(msg.sender, balance);
 
-        // Transfer MyTokens from this smart contract to msg sender
-        token.safeTransfer(msg.sender, _amount); 
-    }
-
-    function withdrawAll() external {
-        withdraw(balanceOf(msg.sender));
+        // Transfer the Tokens from this smart contract to msg sender
+        token.safeTransfer(msg.sender, balance); 
     }
 
     function play(uint8 _move, uint256 _amount) public isAllowedMove(_move) {
