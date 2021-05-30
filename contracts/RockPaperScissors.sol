@@ -25,8 +25,8 @@ contract RockPaperScissors is ERC20 {
 
     constructor(address _token) 
         ERC20(
-            string(abi.encodePacked("RockPaperScissorsToken ", ERC20(_token).name()),
-            string(abi.encodePacked(("RSP"), ERC20(_token).symbol())))
+            string(abi.encodePacked("RockPaperScissorsToken ", ERC20(_token).name())),
+            string(abi.encodePacked(("RSP"), ERC20(_token).symbol()))
         )
     {
         token = IERC20(_token);
