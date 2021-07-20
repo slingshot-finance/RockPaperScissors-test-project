@@ -86,6 +86,20 @@ describe("RPS", function () {
         await expect(rps.connect(player1).revealMove(...p2_reveal)).to.be.revertedWith("Move doesn't match hash");
     });
 
+    it('Should allow 0 wager games to take place and be completed', async function () {
+        RPS = await ethers.getContractFactory("RPS");
+        rps = await RPS.deploy(player2.address, "0", slingbux.address);
+        await rps.deployed();
+        await rps.connect(player1).commitMove(p1_commit);
+        await rps.connect(player2).commitMove(p2_commit);
+        await rps.connect(player1).revealMove(...p1_reveal);
+        await rps.connect(player2).revealMove(...p2_reveal);
+        expect(await rps.gameIsLive()).to.equal(false);
+        expect(await rps.winner()).to.equal(player1.address);
+    });
+
+
+
     it('Should assign the correct winner and allow withdrawal when both reveals are made', async function () {
         await rps.connect(player1).commitMove(p1_commit);
         await rps.connect(player2).commitMove(p2_commit);
