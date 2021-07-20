@@ -4,7 +4,7 @@ My implementation leverages the "commit & reveal" pattern with the keccak256 has
 
 The front-end (pending implementation) will need to encode players inputs with the hashing algorithm using user-defined "seed phrase" before proposing the commit transaction to MetaMask.
 
-##The original brief provided for the job application can be found below.
+## The original brief provided for the job application can be found below.
 
 You will create a smart contract named `RockPaperScissors` whereby:  
 Alice and Bob can play the classic game of rock, paper, scissors using ERC20 (of your choosing).    
