@@ -1,4 +1,5 @@
-# RockPaperScissors test project
+# RockPaperScissors test project: Job application project for Slingshot.
+The original brief provided for the job application can be found below.
 
 You will create a smart contract named `RockPaperScissors` whereby:  
 Alice and Bob can play the classic game of rock, paper, scissors using ERC20 (of your choosing).    
