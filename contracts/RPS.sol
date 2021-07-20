@@ -1,12 +1,10 @@
-// todo: make ability to withdraw if other player doesnt deposit // (and long time for next move if possible?)
-// todo: make a utility that can be spawned from a master contract.
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract RPS {
     struct Player {
-        address payable addr;
+        address addr;
         bytes32 commit;
         string revealed;
     }
@@ -24,24 +22,20 @@ contract RPS {
 
     uint256 public buyIn;
 
-    bool public winnerSelected = false;
+    bool public gameIsLive = true;
     address public winner;
 
     mapping(address => uint256) public balance;
 
     constructor(
-        address payable _player2Address,
+        address _player2Address,
         uint256 _buyIn,
         address _tokenContract
-    ) payable {
+    ) {
         moves["rock"] = Move({value: 0, valid: true});
         moves["paper"] = Move({value: 1, valid: true});
         moves["scissors"] = Move({value: 2, valid: true});
-        players[0] = Player({
-            addr: payable(msg.sender),
-            commit: "",
-            revealed: ""
-        });
+        players[0] = Player({addr: msg.sender, commit: "", revealed: ""});
         players[1] = Player({addr: _player2Address, commit: "", revealed: ""});
         buyIn = _buyIn;
         SlingBux = IERC20(_tokenContract);
@@ -58,7 +52,7 @@ contract RPS {
             (!isEmpty(players[0].commit) && !isEmpty(players[1].commit)),
             "Both players must commit."
         );
-        require(!winnerSelected, "Winner already selected.");
+        require(gameIsLive, "Winner already selected.");
         _;
     }
 
@@ -84,7 +78,7 @@ contract RPS {
                 balance[players[0].addr] = buyIn;
                 balance[players[1].addr] = buyIn;
             }
-            winnerSelected = true;
+            gameIsLive = false;
         }
     }
 
@@ -115,11 +109,13 @@ contract RPS {
         players[playerID].revealed = _move;
         if (!moves[_move].valid) {
             //Code executed when invalid move...
-            winnerSelected = true;
+            gameIsLive = false;
             if (playerID == 0) {
                 balance[players[1].addr] = 2 * buyIn;
+                winner = players[1].addr;
             } else if (playerID == 1) {
                 balance[players[0].addr] = 2 * buyIn;
+                winner = players[0].addr;
             }
         } else {
             selectWinner();
@@ -127,7 +123,19 @@ contract RPS {
     }
 
     function withdraw() external {
-        if (balance[msg.sender] > 0) {
+        if (gameIsLive) {
+            require(
+                msg.sender == players[0].addr,
+                "Only player 1 can withdraw early"
+            );
+            require(
+                isEmpty(players[1].commit),
+                "Player 2 has made a move, no early withdrawals."
+            );
+
+            SlingBux.transfer(players[0].addr, buyIn);
+        } else {
+            require(balance[msg.sender] > 0, "No balance to withdraw.");
             uint256 toSend = balance[msg.sender];
             balance[msg.sender] = 0;
             SlingBux.transfer(msg.sender, toSend);

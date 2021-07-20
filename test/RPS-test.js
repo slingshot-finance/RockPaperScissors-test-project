@@ -62,6 +62,24 @@ describe("RPS", function () {
         expect(await p2.commit).to.equal(p2_commit);
     });
 
+    it('Should allow player1 to withdraw early if player2 has not made a move.', async function () {
+        await rps.connect(player1).commitMove(p1_commit);
+        await rps.connect(player1).withdraw();
+        expect(await slingbux.balanceOf(player1.address)).to.equal("100000000000000000000");
+
+    });
+
+    it('Should only let player1 withdraw early', async function () {
+        await rps.connect(player1).commitMove(p1_commit);
+        await expect(rps.connect(player2).withdraw()).to.be.revertedWith("Only player 1 can withdraw early");
+    });
+
+    it('Should not allow player1 to withdraw early if player2 made a move.', async function () {
+        await rps.connect(player1).commitMove(p1_commit);
+        await rps.connect(player2).commitMove(p2_commit);
+        await expect(rps.connect(player1).withdraw()).to.be.revertedWith("Player 2 has made a move, no early withdrawals.");
+    });
+
     it('Should not allow players to reveal using incorrect values', async function () {
         await rps.connect(player1).commitMove(p1_commit);
         await rps.connect(player2).commitMove(p2_commit);
@@ -73,12 +91,31 @@ describe("RPS", function () {
         await rps.connect(player2).commitMove(p2_commit);
         await rps.connect(player1).revealMove(...p1_reveal);
         await rps.connect(player2).revealMove(...p2_reveal);
-        expect(await rps.winnerSelected()).to.equal(true);
+        expect(await rps.gameIsLive()).to.equal(false);
         expect(await rps.winner()).to.equal(player1.address);
         expect(await rps.balance(player1.address)).to.equal("2000000000000000000");
         await rps.connect(player1).withdraw();
         expect(await rps.balance(player1.address)).to.equal(0);
         expect(await slingbux.balanceOf(player1.address)).to.equal("101000000000000000000");
+    });
+
+    it('Should not allow a loser to withdraw the game winnings', async function () {
+        await rps.connect(player1).commitMove(p1_commit);
+        await rps.connect(player2).commitMove(p2_commit);
+        await rps.connect(player1).revealMove(...p1_reveal);
+        await rps.connect(player2).revealMove(...p2_reveal);
+        await expect(rps.connect(player2).withdraw()).to.be.revertedWith("No balance to withdraw.");
+    });
+
+    it('Should automatically assign the opposing player as the winner if an invalid move was made', async function () {
+        let bad_commit = "0xfb2a8ed6c06d02e4b082114ed00dc0ef0edf0d7a958ec583c202b15d0871c0d2"; //Hashed commit of "invalid123"
+        let bad_reveal = ["invalid","123"];
+        await rps.connect(player1).commitMove(bad_commit);
+        await expect(rps.connect(player1).revealMove(...p1_reveal)).to.be.revertedWith("Both players must commit.");
+        await rps.connect(player2).commitMove(p2_commit);
+        await rps.connect(player1).revealMove(...bad_reveal);
+        expect(await rps.gameIsLive()).to.equal(false);
+        expect(await rps.winner()).to.equal(player2.address);
     });
 
 
