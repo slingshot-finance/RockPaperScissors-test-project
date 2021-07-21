@@ -1,3 +1,5 @@
+//todo add events for all the important ones.... commited, revealed, game over etc etc.
+
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -28,6 +30,7 @@ contract RPS {
     mapping(address => uint256) public balance;
 
     constructor(
+        address _player1Address,
         address _player2Address,
         uint256 _buyIn,
         address _tokenContract
@@ -35,11 +38,11 @@ contract RPS {
         moves["rock"] = Move({value: 0, valid: true});
         moves["paper"] = Move({value: 1, valid: true});
         moves["scissors"] = Move({value: 2, valid: true});
-        players[0] = Player({addr: msg.sender, commit: "", revealed: ""});
+        players[0] = Player({addr: _player1Address, commit: "", revealed: ""});
         players[1] = Player({addr: _player2Address, commit: "", revealed: ""});
         buyIn = _buyIn;
         SlingBux = IERC20(_tokenContract);
-        addressToID[msg.sender] = 0;
+        addressToID[_player1Address] = 0;
         addressToID[_player2Address] = 1;
     }
 
