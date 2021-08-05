@@ -1,4 +1,4 @@
-# RockPaperScissors test project
+# RockPaperScissors project
 
 You will create a smart contract named `RockPaperScissors` whereby:  
 Alice and Bob can play the classic game of rock, paper, scissors using ERC20 (of your choosing).    
@@ -17,8 +17,24 @@ Nice to have, but not necessary.
 - How can you entice players to play, knowing that they may have their funds stuck in the contract if they face an uncooperative player?  
 - Include any tests using Hardhat.
   
-Now fork this repo and do it!
-  
-When you're done, please send an email to zak@slingshot.finance (if you're not applying through Homerun) with a link to your fork or join the [Slingshot Discord channel](https://discord.gg/JNUnqYjwmV) and let us know.  
-  
-Happy hacking!
+
+## Installation
+Guide to getting the smart contract runing on your local environment
+### Prerequisite
+Ensure you have node.js installed on your system
+## Installing
+- Clone the repo
+`git clone https://github.com/prince-curie/RockPaperScissors-test-project.git`
+- Move into the folder `RockPaperScissors-test-project`
+`cd RockPaperScissor-test-project`
+- Install all packages in the `package.json` file.
+`npm install`
+
+## Compile Smart Contract
+`npx hardhat compile`
+
+## Test Smart Contract
+`npx hardhat test`
+
+## Further Updates 
+- Host on the mainnet
