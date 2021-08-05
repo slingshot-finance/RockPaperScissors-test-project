@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # RockPaperScissors project
 
 You will create a smart contract named `RockPaperScissors` whereby:  
@@ -78,5 +77,4 @@ Ensure you have node.js installed on your system
 `npx hardhat test`
 
 ## Further Updates 
->>>>>>> d46be023700e7ac8d1207b0692151f9df08f4134
 - Host on the mainnet
